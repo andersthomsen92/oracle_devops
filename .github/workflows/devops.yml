@@ -45,7 +45,7 @@ jobs:
           
           docker push ghcr.io/${{ github.repository }} --all-tags
       
-      # Register a release in the GitHub repository.
+      # Register a release in the GitHub repository
       - name: Create release notes
         uses: ncipollo/release-action@v1
         with:
