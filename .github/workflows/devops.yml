@@ -12,12 +12,19 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        
       - name: Application Version
         id: semver-app
         uses: paulhatch/semantic-version@v5.4.0
         with:
           bump_each_commit: true
-          tag_prefix: ""
+          tag_prefix: "v"   # Use consistent tagging format
+          major_pattern: "(MAJOR)"
+          minor_pattern: "(MINOR)"
+          version_format: "${major}.${minor}.${patch}"
+          search_commit_body: false
+          enable_prerelease_mode: false
+          debug: true  # Enable debug logs for troubleshooting
       
       # Log in to GitHub Container Registry (GHCR)
       - name: Log in to GHCR
