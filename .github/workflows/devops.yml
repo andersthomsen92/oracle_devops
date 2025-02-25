@@ -18,13 +18,7 @@ jobs:
         uses: paulhatch/semantic-version@v5.4.0
         with:
           bump_each_commit: true
-          tag_prefix: "v"   # Use consistent tagging format
-          major_pattern: "(MAJOR)"
-          minor_pattern: "(MINOR)"
-          version_format: "${major}.${minor}.${patch}"
-          search_commit_body: false
-          enable_prerelease_mode: false
-          debug: true  # Enable debug logs for troubleshooting
+          tag_prefix: "v"
       
       # Log in to GitHub Container Registry (GHCR)
       - name: Log in to GHCR
@@ -45,7 +39,7 @@ jobs:
           
           docker push ghcr.io/${{ github.repository }} --all-tags
       
-      # Register a release in the GitHub repository
+      # Register a release in the GitHub repository.
       - name: Create release notes
         uses: ncipollo/release-action@v1
         with:
