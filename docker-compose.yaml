@@ -2,4 +2,4 @@ services:
   web:
     image: ghcr.io/andersthomsen92/oracle_devops:staging
     ports:
-      - "8000:8000"   
+      - "8080:8080"   
