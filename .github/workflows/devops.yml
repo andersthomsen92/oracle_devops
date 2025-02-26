@@ -72,3 +72,51 @@ jobs:
             cd dowa
             docker compose pull
             docker compose up -d
+
+
+  deployment:
+    needs: delivery
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+  
+      - name: Application Version
+        id: semver-app
+        uses: paulhatch/semantic-version@v5.4.0
+        with:
+          bump_each_commit: true
+  
+      - name: Log in to GHCR
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.MY_TOKEN }}
+  
+  
+      - name: Pull Docker image
+        run: |
+          docker pull ghcr.io/${{ github.repository }}:staging
+      - name: Deliver Docker Compose file to production
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ vars.PRODUCTION_SERVER_IP }}
+          username: ${{ vars.PRODUCTION_SERVER_USERNAME }}
+          key: ${{ secrets.PRODUCTION_SERVER_SSH_KEY }}
+          source: "docker-compose.yaml"
+          target: dowa/
+  
+      - name: Deploy to production server
+        uses: appleboy/ssh-action@v1.2.1
+        with:
+          host: ${{ vars.PRODUCTION_SERVER_IP }}
+          username: ${{ vars.PRODUCTION_SERVER_USERNAME }}
+          key: ${{ secrets.PRODUCTION_SERVER_SSH_KEY }}
+          script: |
+            cd dowa
+            docker compose pull
+            docker compose up -d
